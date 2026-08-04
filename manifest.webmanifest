@@ -1,0 +1,31 @@
+{
+  "name": "Ambru Cosmin Claudiu - Coaching AI, cursuri si productivitate",
+  "short_name": "ambru.ro",
+  "description": "Coaching AI, cursuri online si comunitate privata pentru productivitate, marketing si business.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "theme_color": "#08080B",
+  "background_color": "#08080B",
+  "lang": "ro",
+  "categories": [
+    "business",
+    "productivity",
+    "education"
+  ],
+  "icons": [
+    {
+      "src": "assets/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}

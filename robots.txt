@@ -1,0 +1,6 @@
+# ambru.ro - robots
+
+User-agent: *
+Allow: /
+
+Sitemap: https://ambru.ro/sitemap.xml

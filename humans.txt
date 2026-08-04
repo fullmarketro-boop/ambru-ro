@@ -1,0 +1,12 @@
+/* TEAM */
+    Brand personal: Ambru Cosmin Claudiu
+    Location: Timisoara, Romania (GMT+2)
+    WhatsApp: +40 740 060 612
+    Facebook: https://www.facebook.com/ambru.cosmin
+    LinkedIn: https://ro.linkedin.com/in/ambru-cosmin-claudiu
+    Site: https://ambru.ro
+
+/* SITE */
+    Coaching AI, cursuri online si comunitate privata.
+    Design original pastrat, continut reconstruit prin agentii 1, 2 si 3.
+    Last updated: 2026-08-04
