@@ -3745,6 +3745,85 @@
       text-align: center;
     }
 
+    /* ---------------------------------------------
+   CONTACT FORM - delivers via FormSubmit.
+   Same surface/border language as the cards.
+   --------------------------------------------- */
+    .contact-form {
+      max-width: var(--measure);
+      margin: var(--space-5) auto 0;
+      display: grid;
+      gap: var(--space-3);
+      text-align: left;
+      position: relative;
+    }
+
+    .contact-form label {
+      display: block;
+      margin-bottom: var(--space-1);
+      font-family: var(--f-mono);
+      font-size: .72rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--text-quiet);
+    }
+
+    .contact-form input,
+    .contact-form textarea {
+      width: 100%;
+      padding: .85rem 1rem;
+      border: 1px solid var(--border-lit);
+      border-radius: var(--radius-sm);
+      background: var(--surface);
+      color: var(--text);
+      font-family: var(--f-body);
+      font-size: 1rem;
+      transition: border-color .25s var(--ease-quiet), box-shadow .25s var(--ease-quiet);
+    }
+
+    .contact-form input::placeholder,
+    .contact-form textarea::placeholder {
+      color: var(--text-quiet);
+    }
+
+    .contact-form input:focus-visible,
+    .contact-form textarea:focus-visible {
+      outline: none;
+      border-color: var(--violet);
+      box-shadow: 0 0 0 3px rgba(167, 139, 250, .18);
+    }
+
+    .contact-form textarea {
+      min-height: 9rem;
+      resize: vertical;
+    }
+
+    .cf-actions {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      flex-wrap: wrap;
+    }
+
+    .cf-actions .btn[disabled] {
+      opacity: .6;
+      pointer-events: none;
+    }
+
+    .cf-status {
+      margin: 0;
+      font-family: var(--f-mono);
+      font-size: .8rem;
+      color: var(--text-muted);
+    }
+
+    .cf-status[data-state="ok"] {
+      color: var(--violet);
+    }
+
+    .cf-status[data-state="err"] {
+      color: var(--coral);
+    }
   </style>
 </head>
 
@@ -3793,6 +3872,36 @@
           <div class="social-row"><a class="social-link" href="https://www.facebook.com/ambru.cosmin" target="_blank" rel="noopener">Facebook</a><a class="social-link" href="https://ro.linkedin.com/in/ambru-cosmin-claudiu" target="_blank" rel="noopener">LinkedIn</a></div>
         </article>
       </div>
+    </section>
+    <section class="band" id="email" aria-labelledby="email-h">
+      <div class="sec-head">
+        <span class="sec-eyebrow rise"><span class="sec-eyebrow-num">Email</span> Preferi sa scrii aici?</span>
+        <h2 class="sec-title rise" id="email-h">Trimite-mi un <em>mesaj</em> direct de pe pagina.</h2>
+        <p class="sec-lede rise" style="--d:80ms">Completezi mai jos si mesajul ajunge direct in inboxul meu. Iti raspund in cel mult o zi.</p>
+      </div>
+      <form class="contact-form rise" style="--d:160ms" action="https://formsubmit.co/fullmarket.ro@gmail.com" method="POST" novalidate>
+        <div>
+          <label for="cf-name">Numele tau</label>
+          <input id="cf-name" name="name" type="text" autocomplete="name" placeholder="Cum te numesti?">
+        </div>
+        <div>
+          <label for="cf-email">Emailul tau</label>
+          <input id="cf-email" name="email" type="email" autocomplete="email" required placeholder="nume@firma.ro">
+        </div>
+        <div>
+          <label for="cf-message">Mesajul tau</label>
+          <textarea id="cf-message" name="message" required placeholder="Unde pierzi timp? Ce vrei sa optimizezi?"></textarea>
+        </div>
+        <!-- honeypot: real users never see or fill this field -->
+        <input type="text" name="_honey" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px" aria-hidden="true">
+        <div class="cf-actions">
+          <button class="btn btn-primary" type="submit">
+            Trimite mesajul
+            <svg class="btn-arrow" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+          </button>
+          <p class="cf-status" role="status" aria-live="polite"></p>
+        </div>
+      </form>
     </section>
     <section class="band" aria-labelledby="expect-h">
       <div class="sec-head"><span class="sec-eyebrow rise"><span class="sec-eyebrow-num">Ce urmeaza</span> Fara presiune</span><h2 class="sec-title rise" id="expect-h">Ce se intampla dupa ce imi <em>scrii</em>.</h2></div>
@@ -4159,6 +4268,61 @@
       checkScroll();
 
       document.getElementById("year").textContent = new Date().getFullYear();
+    })();
+  </script>
+  <script>
+    (function () {
+      var form = document.querySelector(".contact-form");
+      if (!form) return;
+      var status = form.querySelector(".cf-status");
+      var btn = form.querySelector('button[type="submit"]');
+      form.addEventListener("submit", async function (e) {
+        e.preventDefault();
+        var email = form.querySelector("#cf-email");
+        var message = form.querySelector("#cf-message");
+        if (!email.checkValidity() || email.value.indexOf("@") < 0) {
+          status.setAttribute("data-state", "err");
+          status.textContent = "Emailul nu arata corect.";
+          email.focus();
+          return;
+        }
+        if (!message.value.trim()) {
+          status.setAttribute("data-state", "err");
+          status.textContent = "Scrie-mi macar o propozitie.";
+          message.focus();
+          return;
+        }
+        btn.disabled = true;
+        status.removeAttribute("data-state");
+        status.textContent = "Se trimite\u2026";
+        try {
+          /* FormSubmit's AJAX endpoint keeps the visitor on the page. */
+          var res = await fetch(form.action.replace("formsubmit.co/", "formsubmit.co/ajax/"), {
+            method: "POST",
+            headers: { "Content-Type": "application/json", "Accept": "application/json" },
+            body: JSON.stringify({
+              name: form.querySelector("#cf-name").value,
+              email: email.value,
+              message: message.value,
+              _honey: form.querySelector('[name="_honey"]').value,
+              _subject: "Mesaj nou de pe ambru.ro",
+              _template: "table",
+              _captcha: "false"
+            })
+          });
+          if (!res.ok) throw new Error("HTTP " + res.status);
+          var data = await res.json();
+          if (String(data.success) !== "true") throw new Error(data.message || "rejected");
+          form.reset();
+          status.setAttribute("data-state", "ok");
+          status.textContent = "Trimis. Iti raspund in cel mult o zi.";
+        } catch (err) {
+          status.setAttribute("data-state", "err");
+          status.textContent = "Ceva nu a mers \u2014 scrie-mi pe WhatsApp.";
+        } finally {
+          btn.disabled = false;
+        }
+      });
     })();
   </script>
 
